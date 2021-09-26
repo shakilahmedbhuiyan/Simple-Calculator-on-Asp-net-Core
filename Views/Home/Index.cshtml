@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Simple Calculator</h1>
+    <hr />
+    <form class="w-50 mx-auto" id="from">
+        <!-- Input Fields-->
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">First Input</span>
+            </div>
+            <input type="text" id="firstNumber" name="frist" class="form-control" placeholder="Enter a decimal number"  aria-describedby="basic-addon1">
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon2">Second Input</span>
+            </div>
+            <input type="text" id="secondNumber" name="second" class="form-control" placeholder="Enter a decimal number"  aria-describedby="basic-addon2">
+        </div>
+        <hr />
+
+        <!-- Arithmatic operatoin buttons -->
+        <div class="row d-flex mx-auto">
+            <div class="col-auto p-2 ">
+                <button class="action btn btn-outline-primary" type="button" data-href="addition">Addition</button>
+            </div>
+            <div class="col-auto p-2 ">
+                <button class="action btn btn-outline-primary" type="button" data-href="substruction">Substraction</button>
+            </div>
+            <div class="col-auto p-2 ">
+                <button class="action btn btn-outline-primary" type="button" data-href="multiplication">Multiplication</button>
+            </div>
+            <div class="col-auto p-2 ">
+                <button class="action btn btn-outline-primary" type="button" data-href="division">Division</button>
+            </div>
+        </div>
+
+        <!-- Result field-->
+
+        <div>
+            <span class="result text-success ml-0">Result:</span>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Result will be written here"
+                       aria-describedby="button-addon2" readonly id="result"
+                       value="">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="reset" data-hef="reset">Reset</button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+    </form>
+
+</div>
+
+
+<script>
+
+    $(".action").click(function () {
+        let input1 = document.getElementById("firstNumber").value;
+        let input2 = document.getElementById("secondNumber").value;
+        let action = $(this).attr("data-href");
+
+         $.ajax({
+            url: '@Url.Action("Calculat", "CalCulator")',
+             method: 'post',
+             data: jQuery.param({ "firstNumber": input1, "secondNumber": input2, "action": action }),
+             success: function (response) {
+                 if (response) {
+                     $(".result").removeClass("text-warning").html("The " + response.action + " of " + input1 + " & " + input2 + " is: " + response.result);
+                     $("#result").val(response.result);
+                 }
+                 else {
+                     $(".result").addClass('text-warning').html("Try Again with a valid decimal value");
+                     $("#result").val("");
+                 }
+                
+             }
+        })
+
+    });
+
+    $("#reset").click(function () {
+        $("#firstNumber").val("");
+        $("#secondNumber").val("");
+        $("#result").val("");
+        $(".result").removeClass("text-warning").html("Result");
+    });
+
+</script>
